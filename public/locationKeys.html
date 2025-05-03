@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Location Keys</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e8f5e9;
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #2e7d32;
+    }
+    .location-list {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .location-item {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+    .location-item:last-child {
+      border-bottom: none;
+    }
+    .place {
+      font-weight: bold;
+      color: #33691e;
+    }
+    .coords {
+      color: #555;
+    }
+    .timestamp {
+      font-size: 0.9em;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Saved Key Locations</h2>
+
+  <div class="location-list" id="locationList">
+    <!-- Locations will be inserted here -->
+  </div>
+
+  <script>
+    async function loadLocations() {
+      const res = await fetch('/locationKeys');
+      const locations = await res.json();
+      const list = document.getElementById('locationList');
+
+      if (!locations.length) {
+        list.innerHTML = '<p>No locations found.</p>';
+        return;
+      }
+
+      locations.reverse().forEach(loc => {
+        const item = document.createElement('div');
+        item.className = 'location-item';
+        item.innerHTML = `
+          <div class="place">${loc.placeName}</div>
+          <div class="coords">Latitude: ${loc.latitude}, Longitude: ${loc.longitude}</div>
+          <div class="timestamp">${new Date(loc.date).toLocaleString()}</div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    loadLocations();
+  </script>
+
+</body>
+</html>
